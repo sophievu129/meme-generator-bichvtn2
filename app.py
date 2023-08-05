@@ -12,7 +12,8 @@ from QuoteEngine import QuoteModel
 from QuoteEngine.ingestor import Ingestor
 from meme import MemeEngine
 
-PROJECT_ROOT = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/").replace("//", "/")
+PROJECT_ROOT = str(pathlib.Path(__file__).parent.resolve())\
+    .replace("\\", "/").replace("//", "/")
 meme_app = Flask(__name__)
 
 meme = MemeEngine(PROJECT_ROOT+'/static')
@@ -40,14 +41,18 @@ def get_image(dir_path):
 
 def setup():
     """Load all resources."""
-    dog_quote_files = [PROJECT_ROOT+'/_data/DogQuotes/DogQuotesTXT.txt',
-                       PROJECT_ROOT+'/_data/DogQuotes/DogQuotesDOCX.docx',
-                       PROJECT_ROOT+'/_data/DogQuotes/DogQuotesPDF.pdf',
-                       PROJECT_ROOT+'/_data/DogQuotes/DogQuotesCSV.csv']
-    panda_quote_files = [PROJECT_ROOT+'/_data/PandaQuotes/PandaQuotesTXT.txt',
-                         PROJECT_ROOT+'/_data/PandaQuotes/PandaQuotesDOCX.docx',
-                         PROJECT_ROOT+'/_data/PandaQuotes/PandaQuotesPDF.pdf',
-                         PROJECT_ROOT+'/_data/PandaQuotes/PandaQuotesCSV.csv']
+    dog_quote_files = [PROJECT_ROOT + '/_data/DogQuotes/DogQuotesTXT.txt',
+                       PROJECT_ROOT + '/_data/DogQuotes/DogQuotesDOCX.docx',
+                       PROJECT_ROOT + '/_data/DogQuotes/DogQuotesPDF.pdf',
+                       PROJECT_ROOT + '/_data/DogQuotes/DogQuotesCSV.csv']
+    panda_quote_files = [PROJECT_ROOT +
+                         '/_data/PandaQuotes/PandaQuotesTXT.txt',
+                         PROJECT_ROOT +
+                         '/_data/PandaQuotes/PandaQuotesDOCX.docx',
+                         PROJECT_ROOT +
+                         '/_data/PandaQuotes/PandaQuotesPDF.pdf',
+                         PROJECT_ROOT +
+                         '/_data/PandaQuotes/PandaQuotesCSV.csv']
     dog_quotes = get_quote(dog_quote_files)
     pandas_quotes = get_quote(panda_quote_files)
 
@@ -86,7 +91,7 @@ def meme_post():
     # Download and save image in to photos folder
     img_name = img_url.split("\\")[-1].split("/")[-1]
     img_path = PROJECT_ROOT + '/static/' + img_name
-    try:   # For when running app locall
+    try:   # For when running app local
         response = requests.get(img_url)
         if response.status_code:
             fp = open(img_path, 'wb')
@@ -95,16 +100,21 @@ def meme_post():
             img = Image.open(img_path)
             img.save(img_path)
     except Exception:   # For when running app in server
-        response = requests.get(img_url)
-        img = Image.open(BytesIO(response.content))
-        img.save(img_path)
+        try:
+            response = requests.get(img_url)
+            img = Image.open(BytesIO(response.content))
+            img.save(img_path)
+        except Exception:
+            return render_template("meme_error.html")
 
     # Create user defined meme
-    path = meme.make_meme(img_path, QuoteModel(body, author)).split("\\")[-1].split("/")[-1]
+    path = meme.make_meme(img_path, QuoteModel(body, author))
+    path = path.split("\\")[-1].split("/")[-1]
 
     return render_template('meme.html', path=path)
 
 
 if __name__ == "__main__":
     """Run meme generator application."""
-    meme_app.run()
+    PORT = os.environ.get("PORT", 5000)
+    meme_app.run(host="0.0.0.0", port=PORT, debug=False)

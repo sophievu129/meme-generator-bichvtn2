@@ -1,1 +1,1 @@
-web: gunicorn app:meme_app
+web: python app.py

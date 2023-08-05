@@ -14,7 +14,8 @@ from QuoteEngine.ingestor import Ingestor
 
 # Paths to the test data files.
 
-TESTS_ROOT = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/").replace("//","/")
+TESTS_ROOT = str(pathlib.Path(__file__).parent.resolve())\
+    .replace("\\", "/").replace("//", "/")
 TEST_DOG_PHOTO = "/../_data/photos/dog"
 TEST_PANDA_PHOTO = "/../_data/photos/panda"
 

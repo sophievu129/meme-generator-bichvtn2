@@ -8,7 +8,8 @@ from MemeEngine.meme_generator import MemeEngine
 from QuoteEngine import QuoteModel
 from QuoteEngine.ingestor import Ingestor
 
-PROJECT_ROOT = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/").replace("//", "/")
+PROJECT_ROOT = str(pathlib.Path(__file__).parent.resolve())\
+    .replace("\\", "/").replace("//", "/")
 DATA_ROOT = PROJECT_ROOT + '/_data/photos/dog'
 
 
@@ -18,7 +19,8 @@ def generate_meme(path=None, body=None, author=None):
         images = DATA_ROOT
         imgs = []
         for root, dirs, files in os.walk(images):
-            imgs = [os.path.join(root, name).replace("\\", "/") for name in files]
+            imgs = [os.path.join(root, name).
+                    replace("\\", "/") for name in files]
 
         img = random.choice(imgs)
     else:

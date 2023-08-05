@@ -6,7 +6,9 @@ import random
 from PIL import Image, ImageFont, ImageDraw
 from QuoteEngine import QuoteModel
 
-ROOT_DIR = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/").replace("//", "/")
+ROOT_DIR = str(pathlib.Path(__file__)
+               .parent.resolve())\
+    .replace("\\", "/").replace("//", "/")
 
 
 class MemeEngine:
@@ -22,17 +24,26 @@ class MemeEngine:
     def font(size=1, bold=False, italic=False):
         """Font for text in meme.
 
-        Return to default Times New Roman font, or specific bold/ italic/ bold and italic.
+        Return to default Times New Roman font,
+        or specific bold/ italic/ bold and italic.
         """
         font_dir = ROOT_DIR + "/../_data/font"
         if bold and italic:
-            font_path = font_dir + "/font-times-new-roman/SVN-Times_New_Roman_Bold_Italic.ttf"
+            font_path = font_dir + \
+                        "/font-times-new-roman/" \
+                        "SVN-Times_New_Roman_Bold_Italic.ttf"
         elif bold:
-            font_path = font_dir + "/font-times-new-roman/SVN-Times_New_Roman_Bold.ttf"
+            font_path = font_dir + \
+                        "/font-times-new-roman/" \
+                        "SVN-Times_New_Roman_Bold.ttf"
         elif italic:
-            font_path = font_dir + "/font-times-new-roman/SVN-Times_New_Roman_Italic.ttf"
+            font_path = font_dir + \
+                        "/font-times-new-roman/" \
+                        "SVN-Times_New_Roman_Italic.ttf"
         else:
-            font_path = font_dir + "/font-times-new-roman/SVN-Times_New_Roman.ttf"
+            font_path = font_dir + \
+                        "/font-times-new-roman/" \
+                        "SVN-Times_New_Roman.ttf"
         return ImageFont.truetype(font=font_path, size=size)
 
     def make_meme(self, img_path, quote: QuoteModel, width=500) -> str:
@@ -62,13 +73,16 @@ class MemeEngine:
         # Prepare to edit meme
         meme = ImageDraw.Draw(new_pic)
 
-        # Choose font size less 1 than found size and set font for body and author
+        # Choose font size less 1 than found size
+        # and set font for body and author
         fontsize_author = 1
-        text_size_w, text_size_l = self.get_text_size(fontsize_author, body, author)
+        text_size_w, text_size_l = self.get_text_size(fontsize_author,
+                                                      body, author)
         while (text_size_w < width) and (text_size_l < length):
             # iterate until the next text size is just larger than the criteria
             fontsize_author += 1
-            text_size_w, text_size_l = self.get_text_size(fontsize_author, body, author)
+            text_size_w, text_size_l = self.get_text_size(fontsize_author,
+                                                          body, author)
 
         fontsize_author = fontsize_author - 1
 
@@ -77,18 +91,22 @@ class MemeEngine:
         text_font_body = self.font(size=fontsize_author * 2)
 
         # Set size text and locate the coordinates of text
-        text_size_w, text_size_l = self.get_text_size(fontsize_author, body, author)
+        text_size_w, text_size_l = self.get_text_size(fontsize_author,
+                                                      body, author)
         x = random.randint(0, width-text_size_w)
         y = random.randint(0, length-text_size_l)
 
         # Add text to image
-        meme.text((x, y), body, font=text_font_body, fill="white", stroke_fill="black", stroke_width=2)
+        meme.text((x, y), body, font=text_font_body,
+                  fill="white", stroke_fill="black", stroke_width=2)
         y_body = y + self.font(size=fontsize_author * 2).getsize(body)[1]
-        meme.text((x, y_body), author, font=text_font_au, fill="white", stroke_fill="black", stroke_width=2)
+        meme.text((x, y_body), author, font=text_font_au,
+                  fill="white", stroke_fill="black", stroke_width=2)
 
         # Save new meme
         while True:
-            meme_path = self.output_dir + "/" + filename + "_meme_" + str(self.iterator) + ".jpg"
+            meme_path = self.output_dir + "/" + \
+                        filename + "_meme_" + str(self.iterator) + ".jpg"
             if os.path.exists(meme_path):
                 self.iterator += 1
             else:
